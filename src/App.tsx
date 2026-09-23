@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Property, Currency, Language } from './types';
-import { TranslationProvider } from './i18n';
+import { TranslationProvider, detectBrowserLanguage, getStoredLanguagePreference } from './i18n';
 import rawPropertiesData from './data/properties.json';
 import { enrichPropertiesWithOwners } from './data/ownersRegistry';
 import { Header } from './components/Header';
@@ -116,15 +116,11 @@ export default function App() {
     }
   });
 
-  // Language state
+  // Language state with persistent override and browser language auto-detection
   const [language, setLanguage] = useState<Language>(() => {
-    try {
-      const stored = localStorage.getItem('kretz_language') as Language | null;
-      if (stored) return stored;
-    } catch {
-      // fallback
-    }
-    return 'EN';
+    const stored = getStoredLanguagePreference();
+    if (stored) return stored;
+    return detectBrowserLanguage();
   });
 
   useEffect(() => {
