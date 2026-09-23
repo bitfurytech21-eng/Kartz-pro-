@@ -22,6 +22,7 @@ import { Currency, Language } from '../types';
 import { CompanyLogo } from './CompanyLogo';
 import { getTranslations } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
+import { RealtimeGoogleTranslate } from './RealtimeGoogleTranslate';
 
 interface HeaderProps {
   currentCurrency: Currency;
@@ -478,143 +479,16 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Luxury Language Switcher with Smooth Fade Transition */}
-            <div className="relative flex items-center" id="header-language-switcher">
-              {/* Refined segmented luxury pill for EN and FR with smooth spring/fade transition */}
-              <div className="flex items-center bg-[#f7f6f4] p-0.5 rounded-full border border-neutral-200/80 shadow-2xs">
-                {(['EN', 'FR'] as const).map((langCode) => {
-                  const isActive = currentLanguage === langCode;
-                  return (
-                    <button
-                      key={langCode}
-                      type="button"
-                      onClick={() => {
-                        if (currentLanguage !== langCode) {
-                          onLanguageChange(langCode);
-                        }
-                      }}
-                      className={`relative px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase transition-colors duration-200 rounded-full select-none ${
-                        isActive ? 'text-[#1d1d1b]' : 'text-neutral-400 hover:text-neutral-800'
-                      }`}
-                      aria-label={`Switch to ${langCode === 'EN' ? 'English' : 'Français'}`}
-                    >
-                      {isActive && (
-                        <motion.div
-                          layoutId="header-lang-active-pill"
-                          className="absolute inset-0 bg-white rounded-full shadow-xs border border-neutral-200/90"
-                          transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                        />
-                      )}
-                      <span className="relative z-10 inline-block min-w-[16px] text-center">
-                        <AnimatePresence mode="wait">
-                          <motion.span
-                            key={`${langCode}-${isActive}`}
-                            initial={{ opacity: 0.6 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0.6 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            {langCode}
-                          </motion.span>
-                        </AnimatePresence>
-                      </span>
-                    </button>
-                  );
-                })}
-
-                {/* If user selected another integrated language (ES, PT, DE, IT), highlight it seamlessly */}
-                {!['EN', 'FR'].includes(currentLanguage) && (
-                  <div className="relative px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase rounded-full select-none text-[#1d1d1b]">
-                    <motion.div
-                      layoutId="header-lang-active-pill"
-                      className="absolute inset-0 bg-white rounded-full shadow-xs border border-neutral-200/90"
-                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                    />
-                    <span className="relative z-10 font-bold">
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={currentLanguage}
-                          initial={{ opacity: 0, y: -2 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 2 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {currentLanguage}
-                        </motion.span>
-                      </AnimatePresence>
-                    </span>
-                  </div>
-                )}
-
-                {/* All Languages Dropdown Toggle Button with smooth icon state */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLangDropdownOpen(!langDropdownOpen);
-                    setCurrencyDropdownOpen(false);
-                  }}
-                  className={`relative z-10 pl-1 pr-1.5 py-1 text-neutral-400 hover:text-black transition-colors rounded-full flex items-center space-x-0.5 ${
-                    langDropdownOpen ? 'text-black' : ''
-                  }`}
-                  title={t.nav.allLanguages || 'All Languages / Toutes les langues'}
-                  aria-label="Open all languages selector"
-                  id="all-languages-dropdown-btn"
-                >
-                  <Globe className="w-3.5 h-3.5" />
-                  <ChevronDown
-                    className={`w-2.5 h-2.5 transition-transform duration-200 ${
-                      langDropdownOpen ? 'rotate-180 text-black' : 'opacity-60'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* All Languages Dropdown with Smooth Fade and Subtle Scale Animation */}
-              <AnimatePresence>
-                {langDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className="absolute right-0 top-full mt-2 w-52 bg-white shadow-xl border border-neutral-200/90 py-1.5 rounded-sm z-50 text-xs backdrop-blur-md max-h-80 overflow-y-auto"
-                  >
-                    <div className="sticky top-0 bg-white/95 backdrop-blur-xs px-3 py-1.5 text-[10px] uppercase tracking-wider text-neutral-400 font-semibold border-b border-neutral-100 flex items-center justify-between z-10">
-                      <span>{t.nav.allLanguages || 'All Languages'}</span>
-                      <span className="text-[9px] font-mono text-neutral-400">{languages.length}</span>
-                    </div>
-                    <div className="py-1">
-                      {languages.map((l) => {
-                        const isSelected = currentLanguage === l.code;
-                        return (
-                          <button
-                            key={l.code}
-                            type="button"
-                            onClick={() => {
-                              onLanguageChange(l.code);
-                              setLangDropdownOpen(false);
-                            }}
-                            className={`w-full text-left px-3 py-2 flex items-center justify-between transition-colors hover:bg-[#fae9e5]/30 ${
-                              isSelected
-                                ? 'font-bold bg-[#fae9e5]/25 text-[#1d1d1b]'
-                                : 'text-neutral-700'
-                            }`}
-                          >
-                            <span className="flex items-center space-x-2.5">
-                              <span className="text-base leading-none">{l.flag}</span>
-                              <span className="font-light">{l.label}</span>
-                            </span>
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400">
-                              {l.code}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Real-time Google Translator Engine */}
+            <RealtimeGoogleTranslate
+              variant="header"
+              onLanguageChange={(codeUpper) => {
+                const matchedLang = languages.find((l) => l.code === codeUpper);
+                if (matchedLang) {
+                  onLanguageChange(matchedLang.code as Language);
+                }
+              }}
+            />
 
             {/* Favorites Heart */}
             <button
@@ -722,41 +596,17 @@ export const Header: React.FC<HeaderProps> = ({
             {t.nav.contact}
           </a>
 
-          {/* Mobile Language Switcher with Smooth Active Pill Transition */}
+          {/* Mobile Real-time Google Translator */}
           <div className="py-3 border-b border-neutral-100">
-            <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-neutral-500 font-medium mb-2">
-              <span>{t.nav.language}</span>
-              <span className="text-[10px] font-mono text-neutral-700 bg-neutral-100 px-1.5 py-0.5 rounded-xs">
-                {currentLanguage}
-              </span>
-            </div>
-            <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 bg-[#f7f6f4] p-1.5 rounded-sm border border-neutral-200/80">
-              {languages.map((l) => {
-                const isActive = currentLanguage === l.code;
-                return (
-                  <button
-                    key={l.code}
-                    type="button"
-                    onClick={() => {
-                      onLanguageChange(l.code);
-                    }}
-                    className={`relative py-2 px-1 text-xs font-medium rounded-xs flex items-center justify-center space-x-1.5 transition-colors select-none ${
-                      isActive ? 'text-[#1d1d1b] font-bold' : 'text-neutral-500 hover:text-black'
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="mobile-lang-active-pill"
-                        className="absolute inset-0 bg-white rounded-xs shadow-xs border border-neutral-200/90"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
-                    <span className="relative z-10 text-sm leading-none">{l.flag}</span>
-                    <span className="relative z-10 text-[11px] uppercase font-mono">{l.code}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <RealtimeGoogleTranslate
+              variant="mobile"
+              onLanguageChange={(codeUpper) => {
+                const matchedLang = languages.find((l) => l.code === codeUpper);
+                if (matchedLang) {
+                  onLanguageChange(matchedLang.code as Language);
+                }
+              }}
+            />
           </div>
 
           <div className="pt-2 flex flex-col space-y-3">

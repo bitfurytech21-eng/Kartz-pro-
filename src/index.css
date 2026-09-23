@@ -11,6 +11,33 @@
     color: #1d1d1b;
     background-color: #ffffff;
     overflow-x: hidden;
+    top: 0px !important;
+    position: static !important;
+  }
+
+  /* Prevent Google Translate banner from pushing page down */
+  .goog-te-banner-frame.skiptranslate,
+  .goog-te-banner-frame,
+  .VIpgJd-ZVi9od-ORHb-OEVmcd,
+  .VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+  #goog-gt-tt,
+  .goog-te-balloon-frame {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .goog-tooltip,
+  .goog-tooltip:hover {
+    display: none !important;
+  }
+
+  .goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body > .skiptranslate {
+    display: none !important;
   }
 
   h1, h2, h3, .font-serif-luxury {
