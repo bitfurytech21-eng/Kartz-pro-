@@ -8,28 +8,30 @@ interface MagazineSpreadProps {
 export const FamilyMagazineSpread: React.FC<MagazineSpreadProps> = ({ className = '' }) => {
   const [activeCover, setActiveCover] = useState<'cover' | 'estate'>('cover');
 
-  // Photo 1: IMG_6451.jpeg / IMG_6413.jpeg (Official L'Agence cover in Parisian Haussmannian salon)
-  // Photo 2: IMG_6412.jpeg (The Kretz family at the Normandy Manor)
-  const coverImage = '/IMG_6451.jpeg';
-  const estateImage = '/IMG_6412.jpeg';
+  // Candidate sources with multi-path resolution
+  const coverCandidates = ['/IMG_6451.jpeg', '/images/family/IMG_6451.jpeg', '/images/owners/IMG_6451.jpeg', '/IMG_6413.jpeg', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'];
+  const estateCandidates = ['/IMG_6412.jpeg', '/images/family/IMG_6412.jpeg', '/images/owners/IMG_6412.jpeg', 'https://images.unsplash.com/photo-1542314831-c6a4d27f3299?auto=format&fit=crop&w=1200&q=85'];
 
-  const fallbackCover = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85';
-  const fallbackEstate = 'https://images.unsplash.com/photo-1542314831-c6a4d27f3299?auto=format&fit=crop&w=1200&q=85';
+  const [coverIndex, setCoverIndex] = useState(0);
+  const [estateIndex, setEstateIndex] = useState(0);
 
-  const [currentCoverSrc, setCurrentCoverSrc] = useState(coverImage);
-  const [currentEstateSrc, setCurrentEstateSrc] = useState(estateImage);
+  const [customCover, setCustomCover] = useState<string | null>(null);
+  const [customEstate, setCustomEstate] = useState<string | null>(null);
 
   // Sync with localStorage and query server on mount and when admin updates photos
   const loadMagazinePhotos = () => {
-    const savedCover = localStorage.getItem('kretz_photo_IMG_6413.jpeg');
+    const savedCover = localStorage.getItem('kretz_photo_IMG_6451.jpeg') || localStorage.getItem('kretz_photo_IMG_6413.jpeg');
     if (savedCover) {
-      setCurrentCoverSrc(savedCover);
+      setCustomCover(savedCover);
     }
     const savedEstate = localStorage.getItem('kretz_photo_IMG_6412.jpeg');
     if (savedEstate) {
-      setCurrentEstateSrc(savedEstate);
+      setCustomEstate(savedEstate);
     }
   };
+
+  const currentCoverSrc = customCover || coverCandidates[coverIndex];
+  const currentEstateSrc = customEstate || estateCandidates[estateIndex];
 
   useEffect(() => {
     loadMagazinePhotos();
@@ -113,9 +115,9 @@ export const FamilyMagazineSpread: React.FC<MagazineSpreadProps> = ({ className 
                   alt={activeCover === 'cover' ? "L'Agence Family Cover" : "The Kretz Family at Historic Estate"}
                   onError={() => {
                     if (activeCover === 'cover') {
-                      if (currentCoverSrc !== fallbackCover) setCurrentCoverSrc(fallbackCover);
+                      if (coverIndex + 1 < coverCandidates.length) setCoverIndex((prev) => prev + 1);
                     } else {
-                      if (currentEstateSrc !== fallbackEstate) setCurrentEstateSrc(fallbackEstate);
+                      if (estateIndex + 1 < estateCandidates.length) setEstateIndex((prev) => prev + 1);
                     }
                   }}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"

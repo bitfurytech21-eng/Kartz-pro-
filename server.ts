@@ -77,8 +77,17 @@ async function startServer() {
   app.get('/api/family-photos', async (req, res) => {
     try {
       const publicDir = path.join(process.cwd(), 'public');
-      const files = await fs.promises.readdir(publicDir).catch(() => []);
-      const photoFiles = files.filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f));
+      const familyDir = path.join(publicDir, 'images', 'family');
+      const ownersDir = path.join(publicDir, 'images', 'owners');
+
+      const [rootFiles, familyFiles, ownerFiles] = await Promise.all([
+        fs.promises.readdir(publicDir).catch(() => []),
+        fs.promises.readdir(familyDir).catch(() => []),
+        fs.promises.readdir(ownersDir).catch(() => []),
+      ]);
+
+      const allFiles = Array.from(new Set([...rootFiles, ...familyFiles, ...ownerFiles]));
+      const photoFiles = allFiles.filter(f => /\.(jpe?g|png|webp|avif)$/i.test(f));
       res.json({ photos: photoFiles });
     } catch (err: any) {
       res.json({ photos: [] });

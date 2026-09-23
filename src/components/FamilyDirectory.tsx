@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Mail,
   Phone,
@@ -127,24 +127,43 @@ const FamilyMemberCard: React.FC<{
   member: FamilyMember;
   customPhoto?: string;
 }> = ({ member, customPhoto }) => {
-  const [imgSrc, setImgSrc] = useState<string | null>(customPhoto || `/${member.photoFilename}`);
+  const candidateUrls = useMemo(() => {
+    const list: string[] = [];
+    if (customPhoto) list.push(customPhoto);
+    if (member.photoFilename) {
+      list.push(`/${member.photoFilename}`);
+      list.push(`/images/family/${member.photoFilename}`);
+      list.push(`/images/owners/${member.photoFilename}`);
+    }
+    return list;
+  }, [customPhoto, member.photoFilename]);
+
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const [hasFailedAll, setHasFailedAll] = useState(false);
 
   useEffect(() => {
-    setImgSrc(customPhoto || `/${member.photoFilename}`);
-  }, [customPhoto, member.photoFilename]);
+    setCandidateIndex(0);
+    setHasFailedAll(false);
+  }, [candidateUrls]);
+
+  const currentSrc = !hasFailedAll && candidateUrls.length > candidateIndex ? candidateUrls[candidateIndex] : null;
 
   return (
     <div className="bg-neutral-50/50 rounded-sm border border-neutral-200 overflow-hidden flex flex-col justify-between hover:border-neutral-400 transition-all duration-300 group shadow-xs">
       <div>
         {/* Advisor Photo or Luxury Monogram Placeholder */}
         <div className="relative aspect-4/3 overflow-hidden bg-neutral-900 flex items-center justify-center">
-          {imgSrc ? (
+          {currentSrc ? (
             <img
-              src={imgSrc}
+              key={currentSrc}
+              src={currentSrc}
               alt={member.name}
               onError={() => {
-                // If the image fails to load, show the bespoke luxury monogram avatar
-                setImgSrc(null);
+                if (candidateIndex + 1 < candidateUrls.length) {
+                  setCandidateIndex((prev) => prev + 1);
+                } else {
+                  setHasFailedAll(true);
+                }
               }}
               className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
               referrerPolicy="no-referrer"
