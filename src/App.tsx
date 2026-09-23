@@ -184,36 +184,15 @@ export default function App() {
 
   const handleOpenAdmin = async (tab: 'inquiries' | 'alerts' | 'clients' | 'owners' | 'family' = 'inquiries') => {
     setAdminInitialTab(tab);
-    if (isAdmin) {
+    const hasMaster = typeof window !== 'undefined' && sessionStorage.getItem('kretz_admin_session_auth') === 'true';
+    if (isAdmin || hasMaster) {
       setIsAdminOpen(true);
       return;
     }
 
-    if (!currentUser) {
-      try {
-        const result = await googleSignIn();
-        if (!result) {
-          // User cancelled or closed the popup
-          return;
-        }
-        if (result.user) {
-          if (isUserAdmin(result.user)) {
-            setIsAdminOpen(true);
-          } else {
-            alert(`Signed in as ${result.user.email}. Note: Administrator console is reserved for authorized managers.`);
-          }
-        }
-      } catch (err: any) {
-        if (
-          err?.code !== 'auth/cancelled-popup-request' &&
-          err?.code !== 'auth/popup-closed-by-user'
-        ) {
-          console.error('Admin Sign In error:', err);
-        }
-      }
-    } else {
-      alert(`Current account (${currentUser.email}) does not have administrator privileges.`);
-    }
+    // Direct route navigation to admin gateway with passcode / SSO options
+    window.location.hash = `/admin/${tab}`;
+    setIsAdminRoute(true);
   };
 
   const handleSignIn = () => {

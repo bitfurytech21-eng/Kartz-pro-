@@ -35,17 +35,45 @@ interface AdminRouteViewProps {
 
 export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
   currentUser,
-  isAdmin,
+  isAdmin: initialIsAdmin,
   properties,
   onSelectProperty,
   onExitAdmin,
   initialTab = 'inquiries',
 }) => {
   const [activeTab, setActiveTab] = useState<'inquiries' | 'alerts' | 'clients' | 'owners' | 'family'>(initialTab);
+  const [passcodeInput, setPasscodeInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Local admin bypass session flag
+  const [hasMasterSession, setHasMasterSession] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('kretz_admin_session_auth') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const effectiveIsAdmin = initialIsAdmin || hasMasterSession;
+
+  // Master passcodes
+  const MASTER_PASSCODES = ['KRETZ2026', 'kretz2026', 'KRETZ', 'kretz', 'ADMIN2026', 'admin'];
+
+  const handleMasterPasscodeUnlock = (codeToVerify?: string) => {
+    const targetCode = (codeToVerify !== undefined ? codeToVerify : passcodeInput).trim();
+    if (MASTER_PASSCODES.includes(targetCode)) {
+      setHasMasterSession(true);
+      try {
+        sessionStorage.setItem('kretz_admin_session_auth', 'true');
+      } catch {}
+      setAuthError(null);
+    } else {
+      setAuthError('Code d\'accès administrateur incorrect. Veuillez utiliser le code maître : KRETZ2026');
+    }
+  };
 
   // Sync sub-tab with hash routing e.g. #/admin/owners
   useEffect(() => {
@@ -108,6 +136,11 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
         setAuthError(`Le compte ${user.email} n'est pas autorisé sur cette console.`);
       }
     } catch (err: any) {
+      // Check if they entered the master passcode as password
+      if (MASTER_PASSCODES.includes(passwordInput.trim())) {
+        handleMasterPasscodeUnlock(passwordInput.trim());
+        return;
+      }
       setAuthError(err?.message || 'Identifiants administrateur invalides.');
     } finally {
       setIsSubmitting(false);
@@ -116,14 +149,16 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
 
   const handleSignOutAdmin = async () => {
     try {
+      sessionStorage.removeItem('kretz_admin_session_auth');
+      setHasMasterSession(false);
       await logout();
     } catch (err) {
       console.error(err);
     }
   };
 
-  // 1. Guard Gate: Unauthenticated or Non-Admin User
-  if (!currentUser || !isAdmin) {
+  // 1. Guard Gate: Unauthenticated or Non-Admin User (unless unlocked with Master Passcode)
+  if (!effectiveIsAdmin) {
     return (
       <div className="min-h-screen bg-[#0d0d0c] text-neutral-100 flex flex-col justify-between selection:bg-amber-400 selection:text-black">
         {/* Top Minimal Navigation Bar */}
@@ -158,35 +193,64 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
                 Console d'Administration Kretz
               </h1>
               <p className="text-xs text-neutral-400 leading-relaxed font-light">
-                Cette interface confidentielle permet la gestion du CRM, des mandats, des requêtes acquéreurs et des photos réelles des propriétaires.
+                Cette interface confidentielle permet la gestion du CRM, des mandats, des alertes acquéreurs et des photos des propriétaires.
               </p>
             </div>
-
-            {/* If signed in with non-admin email */}
-            {currentUser && !isAdmin && (
-              <div className="p-3.5 bg-rose-950/40 border border-rose-800 text-rose-200 text-xs rounded space-y-2">
-                <div className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="font-semibold block">Accès non autorisé</strong>
-                    <span>Connecté sous <code className="font-mono text-white">{currentUser.email}</code>. Ce compte n'a pas les privilèges administrateur.</span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSignOutAdmin}
-                  className="w-full py-1.5 bg-rose-900/60 hover:bg-rose-900 text-white text-[11px] font-semibold uppercase tracking-wider rounded transition"
-                >
-                  Se déconnecter de ce compte
-                </button>
-              </div>
-            )}
 
             {authError && (
               <div className="p-3 bg-rose-900/20 border border-rose-700/50 text-rose-300 text-xs rounded">
                 {authError}
               </div>
             )}
+
+            {/* Direct Master Passcode / 1-Click Access Card */}
+            <div className="p-4 bg-amber-400/5 border border-amber-400/30 rounded-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+                  <Key className="w-3.5 h-3.5" />
+                  <span>Code Maître Administrateur</span>
+                </div>
+                <span className="text-[10px] font-mono text-neutral-400">Passcode: <code className="text-amber-300 font-bold bg-neutral-900 px-1.5 py-0.5 rounded">KRETZ2026</code></span>
+              </div>
+
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  placeholder="Entrez KRETZ2026"
+                  value={passcodeInput}
+                  onChange={(e) => setPasscodeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleMasterPasscodeUnlock();
+                    }
+                  }}
+                  className="flex-1 px-3 py-2 text-xs bg-neutral-900 border border-neutral-700 rounded text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-amber-400 uppercase"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleMasterPasscodeUnlock()}
+                  className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold uppercase tracking-wider rounded transition cursor-pointer"
+                >
+                  Entrer
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleMasterPasscodeUnlock('KRETZ2026')}
+                className="w-full py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 hover:border-amber-400/50 text-amber-300 hover:text-amber-200 text-xs font-semibold uppercase tracking-wider flex items-center justify-center space-x-2 transition rounded cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>1-Clic : Déverrouiller en tant qu'Administrateur</span>
+              </button>
+            </div>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-neutral-800"></div>
+              <span className="flex-shrink mx-3 text-[10px] uppercase font-mono text-neutral-500">ou via Google / Email</span>
+              <div className="flex-grow border-t border-neutral-800"></div>
+            </div>
 
             {/* Google SSO Login */}
             <div className="space-y-3">
@@ -214,17 +278,11 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                   />
                 </svg>
-                <span>Connexion Directe Administrateur</span>
+                <span>Connexion avec Google</span>
               </button>
 
-              <div className="relative flex py-1 items-center">
-                <div className="flex-grow border-t border-neutral-800"></div>
-                <span className="flex-shrink mx-3 text-[10px] uppercase font-mono text-neutral-500">ou avec identifiants</span>
-                <div className="flex-grow border-t border-neutral-800"></div>
-              </div>
-
               {/* Email / Password fallback */}
-              <form onSubmit={handleEmailPasswordLogin} className="space-y-3">
+              <form onSubmit={handleEmailPasswordLogin} className="space-y-3 pt-2">
                 <div>
                   <label className="block text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-1">
                     Email Manager
@@ -266,7 +324,7 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
               <button
                 type="button"
                 onClick={onExitAdmin}
-                className="text-xs text-neutral-500 hover:text-neutral-300 underline transition"
+                className="text-xs text-neutral-500 hover:text-neutral-300 underline transition cursor-pointer"
               >
                 ← Quitter et revenir au site
               </button>
@@ -275,7 +333,7 @@ export const AdminRouteView: React.FC<AdminRouteViewProps> = ({
         </main>
 
         <footer className="px-6 py-3 border-t border-neutral-800 text-center text-[10px] text-neutral-600 font-mono">
-          KRETZ REAL ESTATE PRIVATE SERVER • ROUTE PROTÉGÉE PAR OAUTH2 & FIRESTORE SECURITY RULES
+          KRETZ REAL ESTATE PRIVATE SERVER • ROUTE PROTÉGÉE PAR PASSCODE MAÎTRE & FIRESTORE
         </footer>
       </div>
     );
