@@ -9,8 +9,8 @@ export const FamilyMagazineSpread: React.FC<MagazineSpreadProps> = ({ className 
   const [activeCover, setActiveCover] = useState<'cover' | 'estate'>('cover');
 
   // Candidate sources with multi-path resolution
-  const coverCandidates = ['/IMG_6451.jpeg', '/images/family/IMG_6451.jpeg', '/images/owners/IMG_6451.jpeg', '/IMG_6413.jpeg', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'];
-  const estateCandidates = ['/IMG_6412.jpeg', '/images/family/IMG_6412.jpeg', '/images/owners/IMG_6412.jpeg', 'https://images.unsplash.com/photo-1542314831-c6a4d27f3299?auto=format&fit=crop&w=1200&q=85'];
+  const coverCandidates = ['/IMG_6413.jpeg', '/images/family/IMG_6413.jpeg', '/images/owners/IMG_6413.jpeg', '/IMG_6451.jpeg', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85'];
+  const estateCandidates = ['/IMG_6417.jpeg', '/images/family/IMG_6417.jpeg', '/images/owners/IMG_6417.jpeg', '/IMG_6412.jpeg', 'https://images.unsplash.com/photo-1542314831-c6a4d27f3299?auto=format&fit=crop&w=1200&q=85'];
 
   const [coverIndex, setCoverIndex] = useState(0);
   const [estateIndex, setEstateIndex] = useState(0);
@@ -20,11 +20,11 @@ export const FamilyMagazineSpread: React.FC<MagazineSpreadProps> = ({ className 
 
   // Sync with localStorage and query server on mount and when admin updates photos
   const loadMagazinePhotos = () => {
-    const savedCover = localStorage.getItem('kretz_photo_IMG_6451.jpeg') || localStorage.getItem('kretz_photo_IMG_6413.jpeg');
+    const savedCover = localStorage.getItem('kretz_photo_IMG_6413.jpeg') || localStorage.getItem('kretz_photo_IMG_6451.jpeg');
     if (savedCover) {
       setCustomCover(savedCover);
     }
-    const savedEstate = localStorage.getItem('kretz_photo_IMG_6412.jpeg');
+    const savedEstate = localStorage.getItem('kretz_photo_IMG_6417.jpeg') || localStorage.getItem('kretz_photo_IMG_6412.jpeg');
     if (savedEstate) {
       setCustomEstate(savedEstate);
     }
