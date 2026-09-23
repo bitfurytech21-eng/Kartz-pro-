@@ -1,0 +1,270 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with language and currency preferences",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name",
+          "maxLength": 100
+        },
+        "preferredCurrency": {
+          "type": "string",
+          "description": "Preferred display currency",
+          "enum": ["EUR", "USD", "GBP"]
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "description": "Preferred interface language",
+          "enum": ["EN", "FR", "ES", "PT", "DE", "IT"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of update"
+        }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "Saved favorite luxury property",
+      "type": "object",
+      "properties": {
+        "propertyId": {
+          "type": "string",
+          "description": "Property reference ID",
+          "maxLength": 128
+        },
+        "propertyTitle": {
+          "type": "string",
+          "description": "Title of the saved property",
+          "maxLength": 200
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "addedAt": {
+          "type": "string",
+          "description": "Timestamp when added"
+        }
+      },
+      "required": ["propertyId", "userId", "addedAt"]
+    },
+    "Alert": {
+      "title": "Alert",
+      "description": "Custom property alert criteria",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Subscriber email address",
+          "maxLength": 254
+        },
+        "propertyType": {
+          "type": "string",
+          "description": "Filtered property category",
+          "maxLength": 100
+        },
+        "region": {
+          "type": "string",
+          "description": "Geographical region or destination",
+          "maxLength": 100
+        },
+        "maxBudget": {
+          "type": "string",
+          "description": "Maximum budget criteria",
+          "maxLength": 50
+        },
+        "frequency": {
+          "type": "string",
+          "description": "Notification cadence",
+          "enum": ["instant", "daily", "weekly"]
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID if signed in",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["email", "propertyType", "region", "createdAt"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Direct buyer or client property inquiry",
+      "type": "object",
+      "properties": {
+        "propertyRef": {
+          "type": "string",
+          "description": "Unique reference ID of property",
+          "maxLength": 128
+        },
+        "propertyTitle": {
+          "type": "string",
+          "description": "Title of the inquired property",
+          "maxLength": 200
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Full name of client",
+          "maxLength": 100
+        },
+        "senderEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of client",
+          "maxLength": 254
+        },
+        "senderPhone": {
+          "type": "string",
+          "description": "Phone contact",
+          "maxLength": 50
+        },
+        "message": {
+          "type": "string",
+          "description": "Inquiry message text",
+          "maxLength": 2000
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID if authenticated",
+          "maxLength": 128
+        },
+        "status": {
+          "type": "string",
+          "description": "Inquiry processing state",
+          "enum": ["pending", "in_review", "contacted", "completed"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Submission timestamp"
+        }
+      },
+      "required": ["propertyRef", "senderName", "senderEmail", "createdAt"]
+    },
+    "Valuation": {
+      "title": "Valuation",
+      "description": "Property sale or rental valuation request",
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City or municipality of the asset",
+          "maxLength": 100
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "Postal code",
+          "maxLength": 20
+        },
+        "propertyType": {
+          "type": "string",
+          "description": "Apartment, Mansion, Villa, Estate",
+          "maxLength": 100
+        },
+        "surface": {
+          "type": "string",
+          "description": "Estimated surface area",
+          "maxLength": 50
+        },
+        "rooms": {
+          "type": "string",
+          "description": "Number of rooms",
+          "maxLength": 50
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Owner contact name",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Owner email address",
+          "maxLength": 254
+        },
+        "phone": {
+          "type": "string",
+          "description": "Owner phone number",
+          "maxLength": 50
+        },
+        "intent": {
+          "type": "string",
+          "description": "Transaction intent",
+          "enum": ["sell", "rent"]
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID if authenticated",
+          "maxLength": 128
+        },
+        "status": {
+          "type": "string",
+          "description": "Processing status",
+          "enum": ["new", "reviewed", "contacted", "archived"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["fullName", "email", "phone", "createdAt"]
+    },
+    "TestDoc": {
+      "title": "TestDoc",
+      "description": "Diagnostic document used to verify Firestore connectivity",
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Connectivity test status",
+          "maxLength": 50
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profiles and personal preferences"
+    },
+    "/users/{userId}/favorites/{propertyId}": {
+      "schema": "Favorite",
+      "description": "User saved favorite properties"
+    },
+    "/alerts/{alertId}": {
+      "schema": "Alert",
+      "description": "Property alerts submitted by users"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Property viewing and acquisition inquiries"
+    },
+    "/valuations/{valuationId}": {
+      "schema": "Valuation",
+      "description": "Property sale and rental valuation requests"
+    },
+    "/test/{testId}": {
+      "schema": "TestDoc",
+      "description": "Connection test path"
+    }
+  }
+}

@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: #1d1d1b;
+    background-color: #ffffff;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif-luxury {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1d1d1b;
+}
+
+/* Custom switch for List/Map */
+.map-list-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.map-list-toggle button {
+  position: relative;
+  z-index: 1;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  border-radius: 9999px;
+}
+
+.map-list-toggle button.active {
+  background-color: #1d1d1b;
+  color: #ffffff;
+}
+
+.map-list-toggle button:not(.active) {
+  color: #757575;
+}
+
+.map-list-toggle button:not(.active):hover {
+  color: #1d1d1b;
+}
+
+/* ==========================================================================
+   Print-Specific Stylesheet
+   Ensures pristine, high-end editorial property dossiers when printed from modal.
+   Excludes all navigation, headers, footers, interactive forms, and background UI.
+   ========================================================================== */
+@media print {
+  /* Page configuration */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
+  }
+
+  /* Base typography & exact color fidelity */
+  html, body {
+    background: #ffffff !important;
+    color: #1d1d1b !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Universal hide for all interactive drawers, alerts, admin portals, and backdrop masks */
+  #admin-portal-modal,
+  #favorites-drawer,
+  #gmail-drawer,
+  #calendar-drawer,
+  #create-alert-modal,
+  .modal-backdrop,
+  .drawer-backdrop {
+    display: none !important;
+  }
+
+  /* Utility class to hide any element in print mode */
+  .no-print {
+    display: none !important;
+  }
+
+  /* When printing from Property Detail Modal:
+     Hide the main application shell, hero, navigation header, footer, and background sections */
+  body:has(#property-detail-modal) > #root > div > header,
+  body:has(#property-detail-modal) > #root > div > main,
+  body:has(#property-detail-modal) > #root > div > footer,
+  body:has(#property-detail-modal) #main-header,
+  body:has(#property-detail-modal) main:not(#property-detail-modal main),
+  body:has(#property-detail-modal) footer {
+    display: none !important;
+  }
+
+  /* Fallback hiding for background page elements if :has selector is unsupported */
+  #main-header,
+  #hero-section,
+  #selection-section,
+  #dream-destinations,
+  #market-editorial,
+  #faq-section,
+  #sell-estimate-section,
+  footer {
+    display: none !important;
+  }
+
+  /* Re-orient the Property Detail Modal from a fixed overlay into a clean printable dossier */
+  #property-detail-modal,
+  .property-detail-modal-container {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Hide modal top navigation bar, close buttons, and header */
+  #property-detail-modal > header,
+  #property-detail-modal header {
+    display: none !important;
+  }
+
+  /* Ensure modal main flows naturally on paper */
+  #property-detail-modal main {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure links do not render raw URLs on paper */
+  a[href]::after {
+    content: none !important;
+  }
+
+  /* Hide interactive buttons, inputs, textareas, and embeds */
+  button,
+  input,
+  textarea,
+  select,
+  iframe {
+    display: none !important;
+  }
+
+  /* Ensure images print sharply without cutting awkwardly across pages */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Prevent awkward page cuts across cards and feature boxes */
+  .break-inside-avoid,
+  .rounded-xs,
+  .border,
+  article,
+  section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ensure high text contrast */
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    color: #1d1d1b !important;
+  }
+
+  .text-neutral-400,
+  .text-neutral-500,
+  .text-neutral-600 {
+    color: #4b5563 !important;
+  }
+}
+

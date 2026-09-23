@@ -1,0 +1,31 @@
+# Render Blueprint deployment configuration
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: kretz-luxury-real-estate
+    runtime: node
+    region: frankfurt # Or oregon / ohio / singapore
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RENDER
+        value: "true"
+      # If connecting to Render Managed PostgreSQL:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kretz-postgres-db
+          property: connectionString
+      # Firebase & Gemini API credentials
+      - key: GEMINI_API_KEY
+        sync: false
+
+databases:
+  - name: kretz-postgres-db
+    databaseName: kretz_realestate
+    user: kretz_admin
+    plan: starter

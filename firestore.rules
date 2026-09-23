@@ -1,0 +1,156 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email != null &&
+         request.auth.token.email.lower() == 'info@kretz.site' &&
+         request.auth.token.email_verified == true)
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Diagnostics & connection check
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users and Profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+
+      function isValidUser(data) {
+        return data.keys().hasAll(['email', 'createdAt']) &&
+               data.keys().hasOnly(['email', 'displayName', 'preferredCurrency', 'preferredLanguage', 'createdAt', 'updatedAt']) &&
+               data.email is string && data.email.size() <= 254 &&
+               (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
+               (!('preferredCurrency' in data) || data.preferredCurrency in ['EUR', 'USD', 'GBP']) &&
+               (!('preferredLanguage' in data) || data.preferredLanguage in ['EN', 'FR', 'ES', 'PT', 'DE', 'IT']) &&
+               data.createdAt is string && data.createdAt.size() <= 64 &&
+               (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+      }
+
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming());
+      allow update: if (isOwner(userId) || isAdmin()) && isValidId(userId) && isValidUser(incoming()) &&
+                       incoming().createdAt == existing().createdAt;
+      allow delete: if isOwner(userId) || isAdmin();
+
+      // User Saved Favorites Subcollection
+      match /favorites/{propertyId} {
+        allow get, list: if isOwner(userId) || isAdmin();
+
+        function isValidFavorite(data) {
+          return data.keys().hasAll(['propertyId', 'userId', 'addedAt']) &&
+                 data.keys().hasOnly(['propertyId', 'propertyTitle', 'userId', 'addedAt']) &&
+                 data.propertyId is string && data.propertyId.size() <= 128 &&
+                 data.userId == request.auth.uid &&
+                 (!('propertyTitle' in data) || (data.propertyTitle is string && data.propertyTitle.size() <= 200)) &&
+                 data.addedAt is string && data.addedAt.size() <= 64;
+        }
+
+        allow create: if isOwner(userId) && isValidId(propertyId) && isValidFavorite(incoming());
+        allow update: if false;
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Property Alerts
+    match /alerts/{alertId} {
+      function isValidAlert(data) {
+        return data.keys().hasAll(['email', 'propertyType', 'region', 'createdAt']) &&
+               data.keys().hasOnly(['email', 'propertyType', 'region', 'maxBudget', 'frequency', 'userId', 'createdAt']) &&
+               data.email is string && data.email.size() <= 254 &&
+               data.propertyType is string && data.propertyType.size() <= 100 &&
+               data.region is string && data.region.size() <= 100 &&
+               (!('maxBudget' in data) || (data.maxBudget is string && data.maxBudget.size() <= 50)) &&
+               (!('frequency' in data) || data.frequency in ['instant', 'daily', 'weekly']) &&
+               (!('userId' in data) || data.userId == null || (data.userId is string && data.userId.size() <= 128 && (!isSignedIn() || data.userId == request.auth.uid))) &&
+               data.createdAt is string && data.createdAt.size() <= 64;
+      }
+
+      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isValidId(alertId) && isValidAlert(incoming());
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && isValidAlert(incoming()));
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Property Inquiries
+    match /inquiries/{inquiryId} {
+      function isValidInquiry(data) {
+        return data.keys().hasAll(['propertyRef', 'senderName', 'senderEmail', 'createdAt']) &&
+               data.keys().hasOnly(['propertyRef', 'propertyTitle', 'senderName', 'senderEmail', 'senderPhone', 'message', 'userId', 'status', 'createdAt']) &&
+               data.propertyRef is string && data.propertyRef.size() <= 128 &&
+               data.senderName is string && data.senderName.size() <= 100 &&
+               data.senderEmail is string && data.senderEmail.size() <= 254 &&
+               (!('propertyTitle' in data) || (data.propertyTitle is string && data.propertyTitle.size() <= 200)) &&
+               (!('senderPhone' in data) || (data.senderPhone is string && data.senderPhone.size() <= 50)) &&
+               (!('message' in data) || (data.message is string && data.message.size() <= 2000)) &&
+               (!('userId' in data) || data.userId == null || (data.userId is string && data.userId.size() <= 128 && (!isSignedIn() || data.userId == request.auth.uid))) &&
+               (!('status' in data) || data.status in ['pending', 'in_review', 'contacted', 'completed']) &&
+               data.createdAt is string && data.createdAt.size() <= 64;
+      }
+
+      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isValidId(inquiryId) && isValidInquiry(incoming());
+      allow update: if isAdmin() && isValidInquiry(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Valuations & Mandate Requests
+    match /valuations/{valuationId} {
+      function isValidValuation(data) {
+        return data.keys().hasAll(['fullName', 'email', 'phone', 'createdAt']) &&
+               data.keys().hasOnly(['city', 'postalCode', 'propertyType', 'surface', 'rooms', 'fullName', 'email', 'phone', 'intent', 'userId', 'status', 'createdAt']) &&
+               data.fullName is string && data.fullName.size() <= 100 &&
+               data.email is string && data.email.size() <= 254 &&
+               data.phone is string && data.phone.size() <= 50 &&
+               (!('city' in data) || (data.city is string && data.city.size() <= 100)) &&
+               (!('postalCode' in data) || (data.postalCode is string && data.postalCode.size() <= 20)) &&
+               (!('propertyType' in data) || (data.propertyType is string && data.propertyType.size() <= 100)) &&
+               (!('surface' in data) || (data.surface is string && data.surface.size() <= 50)) &&
+               (!('rooms' in data) || (data.rooms is string && data.rooms.size() <= 50)) &&
+               (!('intent' in data) || data.intent in ['sell', 'rent']) &&
+               (!('userId' in data) || data.userId == null || (data.userId is string && data.userId.size() <= 128 && (!isSignedIn() || data.userId == request.auth.uid))) &&
+               (!('status' in data) || data.status in ['new', 'reviewed', 'contacted', 'archived']) &&
+               data.createdAt is string && data.createdAt.size() <= 64;
+      }
+
+      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isValidId(valuationId) && isValidValuation(incoming());
+      allow update: if isAdmin() && isValidValuation(incoming());
+      allow delete: if isAdmin();
+    }
+  }
+}

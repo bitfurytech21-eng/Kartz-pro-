@@ -1,0 +1,6 @@
+{
+  "name": "Kretz Real Estate - France",
+  "description": "Explore luxury properties in France. Find your dream home with Kretz real estate expertise.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
