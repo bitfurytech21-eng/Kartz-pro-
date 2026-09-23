@@ -8,9 +8,9 @@ interface MagazineSpreadProps {
 export const FamilyMagazineSpread: React.FC<MagazineSpreadProps> = ({ className = '' }) => {
   const [activeCover, setActiveCover] = useState<'cover' | 'estate'>('cover');
 
-  // Photo 1: IMG_6413.jpeg (Official L'Agence cover in Parisian Haussmannian salon)
-  // Photo 2: IMG_6412.jpeg (The Kretz men in navy tailoring at the Normandy Manor)
-  const coverImage = '/IMG_6413.jpeg';
+  // Photo 1: IMG_6451.jpeg / IMG_6413.jpeg (Official L'Agence cover in Parisian Haussmannian salon)
+  // Photo 2: IMG_6412.jpeg (The Kretz family at the Normandy Manor)
+  const coverImage = '/IMG_6451.jpeg';
   const estateImage = '/IMG_6412.jpeg';
 
   const fallbackCover = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85';
