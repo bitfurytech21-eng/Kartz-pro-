@@ -12,20 +12,39 @@ import {
 
 interface RealtimeGoogleTranslateProps {
   variant?: 'header' | 'mobile' | 'floating';
+  currentLanguage?: string;
   onLanguageChange?: (langCode: string) => void;
   className?: string;
 }
 
 export const RealtimeGoogleTranslate: React.FC<RealtimeGoogleTranslateProps> = ({
   variant = 'header',
+  currentLanguage,
   onLanguageChange,
   className = '',
 }) => {
-  const [currentCode, setCurrentCode] = useState<string>(() => getStoredGoogleTranslateLanguage());
+  const [currentCode, setCurrentCode] = useState<string>(() => {
+    if (currentLanguage) return currentLanguage.toLowerCase();
+    return getStoredGoogleTranslateLanguage();
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync when parent language changes
+  useEffect(() => {
+    if (currentLanguage) {
+      const codeLower = currentLanguage.toLowerCase();
+      // Handle special zh cases if needed
+      const matched = GOOGLE_LANGUAGES.find(
+        (l) => l.code.toLowerCase() === codeLower || l.codeUpper.toLowerCase() === codeLower
+      );
+      if (matched && matched.code !== currentCode) {
+        setCurrentCode(matched.code);
+      }
+    }
+  }, [currentLanguage]);
 
   // Initialize script on mount
   useEffect(() => {

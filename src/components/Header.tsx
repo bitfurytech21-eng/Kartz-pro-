@@ -482,8 +482,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Real-time Google Translator Engine */}
             <RealtimeGoogleTranslate
               variant="header"
+              currentLanguage={currentLanguage}
               onLanguageChange={(codeUpper) => {
-                const matchedLang = languages.find((l) => l.code === codeUpper);
+                const matchedLang = languages.find(
+                  (l) => l.code.toUpperCase() === codeUpper.toUpperCase()
+                );
                 if (matchedLang) {
                   onLanguageChange(matchedLang.code as Language);
                 }
@@ -600,8 +603,11 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="py-3 border-b border-neutral-100">
             <RealtimeGoogleTranslate
               variant="mobile"
+              currentLanguage={currentLanguage}
               onLanguageChange={(codeUpper) => {
-                const matchedLang = languages.find((l) => l.code === codeUpper);
+                const matchedLang = languages.find(
+                  (l) => l.code.toUpperCase() === codeUpper.toUpperCase()
+                );
                 if (matchedLang) {
                   onLanguageChange(matchedLang.code as Language);
                 }

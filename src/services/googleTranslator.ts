@@ -91,6 +91,7 @@ export function initGoogleTranslateScript(): void {
     return;
   }
 
+  // Define global callback before loading script
   window.googleTranslateElementInit = function () {
     try {
       if (window.google && window.google.translate) {
@@ -98,6 +99,7 @@ export function initGoogleTranslateScript(): void {
           {
             pageLanguage: 'fr',
             autoDisplay: false,
+            includedLanguages: GOOGLE_LANGUAGES.map((l) => l.code).join(','),
             layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           },
           'google_translate_element'
@@ -122,17 +124,25 @@ export function initGoogleTranslateScript(): void {
   script.type = 'text/javascript';
   script.async = true;
   script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+  script.onerror = () => {
+    console.warn('Google Translate remote script blocked or offline, relying on built-in multilingual engine.');
+  };
   document.head.appendChild(script);
 }
 
 function setGoogleTranslateCookie(langCode: string) {
   const domain = window.location.hostname;
-  const cookieValue = langCode === 'fr' ? '' : `/fr/${langCode}`;
-  const expires = langCode === 'fr' ? 'Thu, 01 Jan 1970 00:00:00 UTC' : 'Fri, 31 Dec 2030 23:59:59 GMT';
+  const cookieValueFr = langCode === 'fr' ? '/fr/fr' : `/fr/${langCode}`;
+  const cookieValueAuto = langCode === 'fr' ? '/auto/fr' : `/auto/${langCode}`;
+  const expires = 'Fri, 31 Dec 2030 23:59:59 GMT';
 
-  document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires};`;
-  document.cookie = `googtrans=${cookieValue}; path=/; domain=.${domain}; expires=${expires};`;
-  document.cookie = `googtrans=${cookieValue}; path=/; domain=${domain}; expires=${expires};`;
+  document.cookie = `googtrans=${cookieValueFr}; path=/; expires=${expires};`;
+  document.cookie = `googtrans=${cookieValueAuto}; path=/; expires=${expires};`;
+  
+  if (domain.includes('.')) {
+    document.cookie = `googtrans=${cookieValueFr}; path=/; domain=.${domain}; expires=${expires};`;
+    document.cookie = `googtrans=${cookieValueAuto}; path=/; domain=.${domain}; expires=${expires};`;
+  }
 }
 
 export function applyGoogleTranslateCode(langCode: string): boolean {
@@ -152,10 +162,16 @@ export function applyGoogleTranslateCode(langCode: string): boolean {
   );
 
   // Attempt DOM select manipulation
-  const select = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
-  if (select) {
+  const triggerSelect = (select: HTMLSelectElement) => {
     select.value = langCode;
     select.dispatchEvent(new Event('change', { bubbles: true }));
+    // Also trigger input event for full coverage
+    select.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  const select = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
+  if (select) {
+    triggerSelect(select);
     return true;
   }
 
@@ -165,14 +181,13 @@ export function applyGoogleTranslateCode(langCode: string): boolean {
     attempts++;
     const retrySelect = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
     if (retrySelect) {
-      retrySelect.value = langCode;
-      retrySelect.dispatchEvent(new Event('change', { bubbles: true }));
+      triggerSelect(retrySelect);
       clearInterval(interval);
     }
-    if (attempts > 12) {
+    if (attempts > 15) {
       clearInterval(interval);
     }
-  }, 200);
+  }, 150);
 
   return false;
 }
