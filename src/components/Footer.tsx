@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ArrowUp,
   Send,
+  Lock,
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
@@ -303,6 +304,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenLegal }) => {
             <span>•</span>
             <a href="#contact-footer" className="hover:text-white transition-colors">
               {t.footer.sitemap}
+            </a>
+            <span>•</span>
+            <a
+              href="#/admin"
+              className="inline-flex items-center space-x-1 hover:text-amber-400 text-neutral-500 transition-colors"
+              title="Admin & Staff Portal"
+            >
+              <Lock className="w-3 h-3 text-neutral-500 hover:text-amber-400" />
+              <span>Admin Portal</span>
             </a>
           </div>
         </div>
