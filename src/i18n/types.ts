@@ -189,8 +189,8 @@ export interface Translations {
     subtitle: string;
     readMore: string;
     viewAll: string;
-    regionsTitle?: string;
-    regionsSubtitle?: string;
+    regionsTitle: string;
+    regionsSubtitle: string;
   };
   faq: {
     title: string;

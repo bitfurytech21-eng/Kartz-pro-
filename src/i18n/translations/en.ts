@@ -166,6 +166,8 @@ export const en: Translations = {
     subtitle: 'Expert analyses on French ultra-luxury residential investments, fiscal frameworks, and architectural stewardship.',
     readMore: 'Read Analysis',
     viewAll: 'View All Editorials',
+    regionsTitle: 'The Most Sought-After Regions for Luxury Real Estate in France',
+    regionsSubtitle: 'Explore the quintessential French regions embodying prestige, natural beauty, and architectural heritage.',
   },
   faq: {
     title: 'Frequently Asked Questions',

@@ -166,6 +166,8 @@ export const nl: Translations = {
     subtitle: 'Deskundige analyses over ultra-luxe residentiële investeringen in Frankrijk, fiscale kaders en architectuurbehoud.',
     readMore: 'Lees Analyse',
     viewAll: 'Bekijk Alle Artikelen',
+    regionsTitle: 'De meest gewilde regio’s voor luxe vastgoed in Frankrijk',
+    regionsSubtitle: 'Ontdek exclusieve Franse regio’s die prestige, natuurlijke schoonheid en historisch erfgoed combineren.',
   },
   faq: {
     title: 'Veelgestelde Vragen',

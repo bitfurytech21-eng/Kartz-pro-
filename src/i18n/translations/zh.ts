@@ -166,6 +166,8 @@ export const zh: Translations = {
     subtitle: '法国顶级豪宅投资、财富税法传承与历史建筑保护的专家前瞻分析。',
     readMore: '阅读全文',
     viewAll: '浏览所有社论',
+    regionsTitle: '法国最受青睐的顶级豪宅地标区域',
+    regionsSubtitle: '探索融汇尊贵声望、自然风光与历史建筑瑰宝的法国卓越核心产区。',
   },
   faq: {
     title: '常见问题解答',

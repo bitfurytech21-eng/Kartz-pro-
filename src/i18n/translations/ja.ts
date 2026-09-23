@@ -166,6 +166,8 @@ export const ja: Translations = {
     subtitle: 'フランスの超富裕層向け住宅投資動向、税務ストラクチャー、建築遺産に関する専門分析。',
     readMore: 'レポートを読む',
     viewAll: 'すべての記事を見る',
+    regionsTitle: 'フランスで最も人気の高い高級不動産エリア',
+    regionsSubtitle: 'プレステージ、雄大な自然、歴史的建造物が調和するフランス屈指のデスティネーション。',
   },
   faq: {
     title: 'よくあるご質問 (FAQ)',

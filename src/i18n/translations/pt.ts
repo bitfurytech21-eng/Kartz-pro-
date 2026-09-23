@@ -166,6 +166,8 @@ export const pt: Translations = {
     subtitle: 'Análises especializadas sobre investimentos residenciais de ultra-luxo em França, regimes fiscais e património.',
     readMore: 'Ler artigo',
     viewAll: 'Ver todos os editoriais',
+    regionsTitle: 'As regiões mais procuradas para o imobiliário de luxo em França',
+    regionsSubtitle: 'Descubra os terroirs franceses de exceção aliando prestígio, beleza natural e património.',
   },
   faq: {
     title: 'Perguntas Frequentes',

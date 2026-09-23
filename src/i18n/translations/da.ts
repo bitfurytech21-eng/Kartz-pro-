@@ -166,6 +166,8 @@ export const da: Translations = {
     subtitle: 'Ekspertanalyser om franske ultra-luksusejendomme og investeringer.',
     readMore: 'Læs Analyse',
     viewAll: 'Se Alle Artikler',
+    regionsTitle: 'De mest eftertragtede regioner for luksusejendomme i Frankrig',
+    regionsSubtitle: 'Udforsk eksklusive franske regioner, der forener prestige, naturskønhed og historisk arv.',
   },
   faq: {
     title: 'Ofte Stillede Spørgsmål',

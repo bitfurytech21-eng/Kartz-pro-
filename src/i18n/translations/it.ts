@@ -166,6 +166,8 @@ export const it: Translations = {
     subtitle: 'Approfondimenti esclusivi sugli investimenti residenziali di prestigio in Francia e tendenze fiscali.',
     readMore: 'Leggi l’analisi',
     viewAll: 'Tutti gli articoli',
+    regionsTitle: 'Le regioni più ricercate per il settore immobiliare di lusso in Francia',
+    regionsSubtitle: 'Esplora i territori francesi d’eccezione che uniscono prestigio, bellezza naturale e patrimonio storico.',
   },
   faq: {
     title: 'Domande Frequenti',

@@ -166,6 +166,8 @@ export const es: Translations = {
     subtitle: 'Análisis expertos sobre inversiones residenciales de ultra-lujo en Francia, fiscalidad y arquitectura.',
     readMore: 'Leer análisis',
     viewAll: 'Ver todos los artículos',
+    regionsTitle: 'Las regiones más cotizadas para el sector inmobiliario de lujo en Francia',
+    regionsSubtitle: 'Descubra las regiones francesas más exclusivas que combinan prestigio, belleza natural y patrimonio.',
   },
   faq: {
     title: 'Preguntas Frecuentes',

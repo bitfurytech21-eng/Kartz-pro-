@@ -166,6 +166,8 @@ export const fr: Translations = {
     subtitle: 'Expertise patrimoniale, tendances de l’immobilier ultra-luxe français et décryptages fiscaux exclusifs.',
     readMore: 'Lire l’analyse',
     viewAll: 'Voir tous les éditoriaux',
+    regionsTitle: 'Les régions les plus recherchées de l’immobilier de luxe en France',
+    regionsSubtitle: 'Explorez les terroirs français d’exception alliant prestige, beauté naturelle et patrimoine architectural.',
   },
   faq: {
     title: 'Foire Aux Questions',

@@ -166,6 +166,8 @@ export const fi: Translations = {
     subtitle: 'Asiantuntija-arviot Ranskan ultraluksuskiinteistöjen markkinoista.',
     readMore: 'Lue Analyysi',
     viewAll: 'Katso Kaikki Artikkelit',
+    regionsTitle: 'Ranskan halutuimmat luksuskiinteistöjen alueet',
+    regionsSubtitle: 'Tutustu arvostettuihin ranskalaisiin kohteisiin, joissa yhdistyvät arvokkuus, luonto ja historia.',
   },
   faq: {
     title: 'Usein Kysytyt Kysymykset',

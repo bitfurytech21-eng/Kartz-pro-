@@ -166,6 +166,8 @@ export const sv: Translations = {
     subtitle: 'Expertanalyser om investeringar i franska ultra-lyxfastigheter, skatteramverk och arkitektur.',
     readMore: 'Läs Analysen',
     viewAll: 'Visa Alla Artiklar',
+    regionsTitle: 'De mest eftertraktade regionerna för lyxfastigheter i Frankrike',
+    regionsSubtitle: 'Utforska Frankrikes mest exklusiva regioner med prestige, natur och kulturarv.',
   },
   faq: {
     title: 'Vanliga Frågor',

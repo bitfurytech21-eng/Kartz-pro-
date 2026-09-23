@@ -166,6 +166,8 @@ export const tr: Translations = {
     subtitle: 'Fransız lüks gayrimenkul yatırımları, vergi mevzuatı ve mimari miras üzerine uzman değerlendirmeleri.',
     readMore: 'Analizi Oku',
     viewAll: 'Tüm Makaleleri Gör',
+    regionsTitle: 'Fransa’da Lüks Gayrimenkul İçin En Çok Tercih Edilen Bölgeler',
+    regionsSubtitle: 'Prestij, doğal güzellik ve tarihi mirası buluşturan seçkin Fransız bölgelerini keşfedin.',
   },
   faq: {
     title: 'Sıkça Sorulan Sorular',

@@ -166,6 +166,8 @@ export const cs: Translations = {
     subtitle: 'Expertní analýzy investic do francouzských luxusních nemovitostí.',
     readMore: 'Číst Analýzu',
     viewAll: 'Všechny Články',
+    regionsTitle: 'Nejžádanější regiony pro luxusní nemovitosti ve Francii',
+    regionsSubtitle: 'Objevte výjimečné francouzské regiony spojující prestiž, přírodní krásy a historické dědictví.',
   },
   faq: {
     title: 'Často Kladené Otázky',

@@ -166,6 +166,8 @@ export const ko: Translations = {
     subtitle: '프랑스 초호화 주거용 부동산 투자, 세제 혜택 및 건축 유산 보존에 관한 전문가 심층 분석.',
     readMore: '분석 읽기',
     viewAll: '모든 아티클 보기',
+    regionsTitle: '프랑스 최고급 럭셔리 부동산 인기 지역',
+    regionsSubtitle: '최고의 품격, 수려한 자연경관, 유서 깊은 건축 유산이 어우러진 프랑스 핵심 지역을 탐방해보세요.',
   },
   faq: {
     title: '자주 묻는 질문 (FAQ)',

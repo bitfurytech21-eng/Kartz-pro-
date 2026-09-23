@@ -166,6 +166,8 @@ export const pl: Translations = {
     subtitle: 'Eksperckie analizy francuskiego rynku nieruchomości ultra-luksusowych.',
     readMore: 'Czytaj Analizę',
     viewAll: 'Wszystkie Artykuły',
+    regionsTitle: 'Najbardziej poszukiwane regiony luksusowych nieruchomości we Francji',
+    regionsSubtitle: 'Odkryj wyjątkowe francuskie tereny łączące prestiż, naturalne piękno i dziedzictwo historyczne.',
   },
   faq: {
     title: 'Często Zadawane Pytania',

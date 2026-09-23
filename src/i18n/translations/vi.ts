@@ -166,6 +166,8 @@ export const vi: Translations = {
     subtitle: 'Nhận định chuyên sâu về đầu tư bất động sản siêu sang tại Pháp.',
     readMore: 'Đọc Bài Viết',
     viewAll: 'Xem Tất Cả Bài Viết',
+    regionsTitle: 'Những khu vực bất động sản cao cấp được săn đón nhất tại Pháp',
+    regionsSubtitle: 'Khám phá các điểm đến đẳng cấp của nước Pháp kết hợp giữa danh tiếng, vẻ đẹp thiên nhiên và di sản kiến trúc.',
   },
   faq: {
     title: 'Câu Hỏi Thường Gặp',

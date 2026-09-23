@@ -166,6 +166,8 @@ export const de: Translations = {
     subtitle: 'Fachanalysen zu französischen Spitzenimmobilien, Vermögensstrukturen und Architekturtrends.',
     readMore: 'Analyse lesen',
     viewAll: 'Alle Beiträge',
+    regionsTitle: 'Die gefragtesten Regionen für Luxusimmobilien in Frankreich',
+    regionsSubtitle: 'Entdecken Sie die schönsten französischen Regionen mit Prestige, Natur und historischem Erbe.',
   },
   faq: {
     title: 'Häufig gestellte Fragen',
